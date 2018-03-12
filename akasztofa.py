@@ -10,6 +10,20 @@ def reset_terminal():
     subprocess.call(["printf", "\033c"])
 
 
+def print_about():
+    reset_terminal()
+    print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
+    print("""
+        Rules of the game:
+
+        After you choosen a category or wrote a custom word,
+        you (or the other player) have to find out the word
+        by writing different letters. If the letter is in
+        the word, it will be pasted to the lines.
+
+        You have 9 lifes.
+    """)
+
 # beolvassa fájlt és visszaadja a kategóriákat (a sorok eleje) és a szavakat
 def read_letters():
     with open('word_list.csv', 'r') as f:
@@ -79,18 +93,8 @@ def tipp_f(hitted, bad_tips, life, the_word):
 # sets the menu screen and asks the game mode
 def menu_mode():
     while True:
-        print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
-        print("""
-        Rules of the game:
-
-        After you choosen a category or wrote a custom word,
-        you (or the other player) have to find out the word
-        by writing different letters. If the letter is in
-        the word, it will be pasted to the lines.
-
-        You have 9 lifes.
-
-        GAME MODES:""")
+        print_about()
+        print("    GAME MODES:")
         print("    1 - NORMAL")
         print("    2 - ARCADE")
         print("    3 - ")
@@ -109,20 +113,8 @@ def menu_cat():
     while True:
         life, hitted, bad_tips = init()
         word_list, cat_list = read_letters()
-        reset_terminal()
-
-        print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
-        print("""
-        Rules of the game:
-
-        After you choosen a category or wrote a custom word,
-        you (or the other player) have to find out the word
-        by writing different letters. If the letter is in
-        the word, it will be pasted to the lines.
-
-        You have 9 lifes.
-
-        CATEGORIES:""")
+        print_about()
+        print("   CATEGORIES:""")
         print("   -1 - A RANDOM WORD OF ALL CATEGORY")
         print("    0 - A WORD GIVEN BY A PLAYER")
         i = 1
