@@ -107,11 +107,12 @@ def menu_mode():
             continue
     
 
-
 # sets the menu screen and asks the category
-def menu_cat():
+def menu_cat(mode):
+    life_left = len(figure) - 1
     while True:
         life, hitted, bad_tips = init()
+        life = life_left
         word_list, cat_list = read_letters()
         print_about()
         print("   CATEGORIES:""")
@@ -123,7 +124,10 @@ def menu_cat():
             i += 1
 
         try:
-            numb = input_numb("category")       # bekéri a választott kategória számát
+            if mode == 2: 
+                numb = -1
+            else:
+                numb = input_numb("category")       # bekéri a választott kategória számát
             if numb not in range(-1, len(cat_list) + 1):
                 continue
         except ValueError:
@@ -138,11 +142,11 @@ def menu_cat():
             else:
                 hitted.append("_")
 
-        game_menu(the_word, life, hitted, bad_tips, category)
+        life_left = game_menu(the_word, life, hitted, bad_tips, category, mode)
 
 
 # itt folyik a játék, itt rajzolódik az akasztófa
-def game_menu(the_word, life, hitted, bad_tips, category):
+def game_menu(the_word, life, hitted, bad_tips, category, mode):
 
     while life > 0 and "_" in hitted:
         reset_terminal()
@@ -168,18 +172,23 @@ def game_menu(the_word, life, hitted, bad_tips, category):
         print(figure[9 - life])
         print("   YOU'RE HANGED, BASTARD!" + "\n\n" +
               "   YOU SHOULD FIND OUT THIS:", the_word)
+        if mode == 2:
+            sys.exit()
 
     if life > 0:
         reset_terminal()
         print(figure[9 - life])
         print("   YOU WON!!!", "\n\n", "  THE WORD:", the_word)
 
-    new_game = input("\n   Do yo try again [y/n]? ")
-    if new_game in ["y", "Y"]:
-        return
+    if mode == 2:
+        return life
     else:
-        print("\n   Thanks the game! Bye...")
-        sys.exit()
+        new_game = input("\n   Do yo try again [y/n]? ")
+        if new_game in ["y", "Y"]:
+            return None
+        else:
+            print("\n   Thanks the game! Bye...")
+            sys.exit()
 
 
 # lejátsza az intrót és meghívja a menu()-t
@@ -189,7 +198,7 @@ def main():
         intro(logo)
         while True:
             mode = menu_mode()
-            menu_cat()
+            menu_cat(mode)
     except KeyboardInterrupt:
         print("\n   You exited the game!")
         sys.exit()
