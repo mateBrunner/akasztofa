@@ -52,8 +52,6 @@ def random_word(numb, word_list, cat_list):
     if numb == 0:                          # játékos által megadott szó
         the_word = input("    Give the word to find out: ")
         category = "WORD FROM A PLAYER"
-    if numb < -1 or numb > len(cat_list):
-        menu()    # ha bármi más
     return the_word, category
 
 
@@ -134,6 +132,8 @@ def menu_cat():
 
         try:
             numb = input_numb("category")       # bekéri a választott kategória számát
+            if numb not in range(-1, len(cat_list) + 1):
+                continue
         except ValueError:
             continue
         the_word, category = random_word(numb, word_list, cat_list)     # választ egy szót
