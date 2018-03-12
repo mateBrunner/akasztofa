@@ -29,7 +29,7 @@ def input_numb():   # beolvas egy számot, vagy kilép, ha rossz az input
     try:
         return int(numb)
     except ValueError:
-        menu()
+       raise ValueError("Invalid input")
 
 
 # értéket ad néhány változónak az elején
@@ -80,41 +80,45 @@ def tipp_f(hitted, bad_tips, life, the_word):
 
 # sets the menu screen and asks the category
 def menu():
-    life, hitted, bad_tips = init()
-    word_list, cat_list = read_letters()
-    reset_terminal()
+    while True:
+        life, hitted, bad_tips = init()
+        word_list, cat_list = read_letters()
+        reset_terminal()
 
-    print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
-    print("""
-    Rules of the game:
+        print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
+        print("""
+        Rules of the game:
 
-    After you choosen a category or wrote a custom word,
-    you (or the other player) have to find out the word
-    by writing different letters. If the letter is in
-    the word, it will be pasted to the lines.
+        After you choosen a category or wrote a custom word,
+        you (or the other player) have to find out the word
+        by writing different letters. If the letter is in
+        the word, it will be pasted to the lines.
 
-    You have 9 lifes.
+        You have 9 lifes.
 
-    CATEGORIES:""")
-    print("   -1 - A RANDOM WORD OF ALL CATEGORY")
-    print("    0 - A WORD GIVEN BY A PLAYER")
-    i = 1
-    for elem in cat_list:
-        print("{:5} - {}".format(i, elem))
-        i += 1
+        CATEGORIES:""")
+        print("   -1 - A RANDOM WORD OF ALL CATEGORY")
+        print("    0 - A WORD GIVEN BY A PLAYER")
+        i = 1
+        for elem in cat_list:
+            print("{:5} - {}".format(i, elem))
+            i += 1
 
-    numb = input_numb()       # bekéri a választott kategória számát
-    the_word, category = random_word(numb, word_list, cat_list)     # választ egy szót
+        try:
+            numb = input_numb()       # bekéri a választott kategória számát
+        except ValueError:
+            continue
+        the_word, category = random_word(numb, word_list, cat_list)     # választ egy szót
 
-    for c in the_word:        # felépíti a hitted listát
-        if c == '-':
-            hitted.append("-")
-        elif c == ' ':
-            hitted.append(" ")
-        else:
-            hitted.append("_")
+        for c in the_word:        # felépíti a hitted listát
+            if c == '-':
+                hitted.append("-")
+            elif c == ' ':
+                hitted.append(" ")
+            else:
+                hitted.append("_")
 
-    game_menu(the_word, life, hitted, bad_tips, category)
+        game_menu(the_word, life, hitted, bad_tips, category)
 
 
 # itt folyik a játék, itt rajzolódik az akasztófa
