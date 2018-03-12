@@ -24,12 +24,12 @@ def read_letters():
 
 # beolvassa a számot, ami a kategóriát jelöli, vagy hibára fut és
 # újrahívja a menu()-t
-def input_numb():   # beolvas egy számot, vagy kilép, ha rossz az input
-    numb = input("\n    Give the number of a category: ")
+def input_numb(word):   # beolvas egy számot, vagy kilép, ha rossz az input
+    numb = input("\n    Give the number of a {}: ".format(word))
     try:
         return int(numb)
     except ValueError:
-       raise ValueError("Invalid input")
+        raise ValueError("Invalid input")
 
 
 # értéket ad néhány változónak az elején
@@ -78,8 +78,36 @@ def tipp_f(hitted, bad_tips, life, the_word):
     return bad_tips, life
 
 
+# sets the menu screen and asks the game mode
+def menu_mode():
+    while True:
+        print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
+        print("""
+        Rules of the game:
+
+        After you choosen a category or wrote a custom word,
+        you (or the other player) have to find out the word
+        by writing different letters. If the letter is in
+        the word, it will be pasted to the lines.
+
+        You have 9 lifes.
+
+        GAME MODES:""")
+        print("    1 - NORMAL")
+        print("    2 - ARCADE")
+        print("    3 - ")
+
+        try:
+            numb = input_numb("mode")
+            if numb in [1, 2, 3]:
+                return numb       # bekéri a választott kategória számát
+        except ValueError:
+            continue
+    
+
+
 # sets the menu screen and asks the category
-def menu():
+def menu_cat():
     while True:
         life, hitted, bad_tips = init()
         word_list, cat_list = read_letters()
@@ -105,7 +133,7 @@ def menu():
             i += 1
 
         try:
-            numb = input_numb()       # bekéri a választott kategória számát
+            numb = input_numb("category")       # bekéri a választott kategória számát
         except ValueError:
             continue
         the_word, category = random_word(numb, word_list, cat_list)     # választ egy szót
@@ -168,7 +196,8 @@ def main():
         sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=32, cols=60))
         intro(logo)
         while True:
-            menu()
+            mode = menu_mode()
+            menu_cat()
     except KeyboardInterrupt:
         print("\n   You exited the game!")
         sys.exit()
