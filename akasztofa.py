@@ -25,6 +25,14 @@ def print_about():
     """)
 
 
+def color_green(text):
+    return "\033[32m{}\033[0m".format(text)
+
+
+def color_red(text):
+    return "\033[31m{}\033[0m".format(text)
+
+
 # beolvassa fájlt és visszaadja a kategóriákat (a sorok eleje) és a szavakat
 def read_letters():
     with open('word_list.csv', 'r') as f:
@@ -158,13 +166,13 @@ def game_menu(the_word, life, hitted, bad_tips, category, mode):
         for i in range(
                 len(the_word)):      # writing the lines and hitted letters
             if the_word[i] != " " and the_word[i] != "-":
-                print("_" + hitted[i] + "_", end=" ")
+                print("_{}_".format(hitted[i] if hitted[i] == "_" else color_green(hitted[i])), end=" ")
             else:
                 print(" " + hitted[i] + " ", end=" ")
 
-        print("\n\n   BAD TIPS: ", end=" ")
+        print("\n\n   BAD TIPS:", end=" ")
         for i in bad_tips:
-            print(i, end="  ")
+            print(color_red(i), end=" ")
 
         bad_tips, life = tipp_f(hitted, bad_tips, life, the_word)
 
