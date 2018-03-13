@@ -10,6 +10,33 @@ def reset_terminal():
     subprocess.call(["printf", "\033c"])
 
 
+def print_toplist(name, hitted_words):
+    fajl = open('toplist.txt', "r")
+    top_list = fajl.read().split('\n')
+    top_list = [elem.split("  ") for elem in top_list]
+    top_list = top_list[:-1]
+    fajl.close()
+    inserted = False
+    for i in range(len(top_list)):
+        if hitted_words > int(top_list[i][0]):
+            top_list.insert(i, [str(hitted_words), name])
+            inserted = True
+            break
+    if not inserted:
+        top_list.append([str(hitted_words), name])
+    if len(top_list) > 10:
+        top_list = top_list[:-1]
+    print("\n   BEST PLAYERS:")
+    for i in range(len(top_list)):
+        print("   {:10}{}".format(top_list[i][1], top_list[i][0]))
+    fajl = open('toplist.txt', 'w')
+    content = ""
+    for i in range(len(top_list)):
+        content += "{}  {}\n".format(top_list[i][0], top_list[i][1])
+    fajl.write(content)
+    fajl.close()
+
+
 def print_about():
     reset_terminal()
     print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
@@ -23,6 +50,7 @@ def print_about():
 
         You have 9 lifes.
     """)
+
 
 # beolvassa fájlt és visszaadja a kategóriákat (a sorok eleje) és a szavakat
 def read_letters():
@@ -91,7 +119,7 @@ def tipp_f(hitted, bad_tips, life, the_word):
 
 
 # sets the menu screen and asks the game mode
-def menu_mode():
+def menu_mode(name=[]):
     while True:
         print_about()
         print("    GAME MODES:")
@@ -102,17 +130,20 @@ def menu_mode():
         try:
             numb = input_numb("mode")
             if numb in [1, 2, 3]:
+                if numb == 2:
+                    name.append(input("   Please give your name: "))
                 return numb       # bekéri a választott kategória számát
         except ValueError:
             continue
     
 
 # sets the menu screen and asks the category
-def menu_cat(mode):
+def menu_cat(mode, name=""):
     life_left = len(figure) - 1
+    hitted_words = 0
     while True:
         life, hitted, bad_tips = init()
-        life = life_left
+        life = life_left 
         word_list, cat_list = read_letters()
         print_about()
         print("   CATEGORIES:""")
@@ -142,17 +173,18 @@ def menu_cat(mode):
             else:
                 hitted.append("_")
 
-        life_left = game_menu(the_word, life, hitted, bad_tips, category, mode)
+        life_left, hitted_words = game_menu(the_word, life, hitted, bad_tips, category, mode, hitted_words, name)
 
 
 # itt folyik a játék, itt rajzolódik az akasztófa
-def game_menu(the_word, life, hitted, bad_tips, category, mode):
+def game_menu(the_word, life, hitted, bad_tips, category, mode, hitted_words, name):
 
     while life > 0 and "_" in hitted:
         reset_terminal()
 
         print(figure[9 - life], "\n")
-        print("   YOU HAVE TO FIND OUT A(N) " + category + "\n\n", end="   ")
+        print("   YOU HAVE TO FIND OUT A(N) " + category + "\n")
+        print("   Number of solved words: ", hitted_words, "\n\n\n", end="   ")
 
         for i in range(
                 len(the_word)):      # writing the lines and hitted letters
@@ -171,8 +203,10 @@ def game_menu(the_word, life, hitted, bad_tips, category, mode):
         reset_terminal()
         print(figure[9 - life])
         print("   YOU'RE HANGED, BASTARD!" + "\n\n" +
-              "   YOU SHOULD FIND OUT THIS:", the_word)
+              "   YOU SHOULD FIND OUT THIS:", the_word, "\n")
         if mode == 2:
+            print("   Number of solved words: ", hitted_words)
+            print_toplist(name, hitted_words)
             sys.exit()
 
     if life > 0:
@@ -181,7 +215,8 @@ def game_menu(the_word, life, hitted, bad_tips, category, mode):
         print("   YOU WON!!!", "\n\n", "  THE WORD:", the_word)
 
     if mode == 2:
-        return life
+        hitted_words += 1
+        return life, hitted_words
     else:
         new_game = input("\n   Do yo try again [y/n]? ")
         if new_game in ["y", "Y"]:
@@ -196,9 +231,10 @@ def main():
     try:
         sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=32, cols=60))
         intro(logo)
+        name = []
         while True:
-            mode = menu_mode()
-            menu_cat(mode)
+            mode = menu_mode(name)
+            menu_cat(mode, name[0])
     except KeyboardInterrupt:
         print("\n   You exited the game!")
         sys.exit()
