@@ -151,7 +151,10 @@ def menu_cat(mode, name=""):
     hitted_words = 0
     while True:
         life, hitted, bad_tips = init()
-        life = life_left 
+        life = life_left
+        life += 3
+        if life > len(figure) - 1:
+            life = len(figure) - 1
         word_list, cat_list = read_letters()
         print_about()
         print("   CATEGORIES:""")
