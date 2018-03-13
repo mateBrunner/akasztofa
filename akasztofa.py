@@ -14,14 +14,14 @@ def print_about():
     reset_terminal()
     print(logo[2], end="")     # kiírja a szabályokat és kategóriákat
     print("""
-        Rules of the game:
+    Rules of the game:
 
-        After you choosen a category or wrote a custom word,
-        you (or the other player) have to find out the word
-        by writing different letters. If the letter is in
-        the word, it will be pasted to the lines.
+    After you choosen a category or wrote a custom word,
+    you (or the other player) have to find out the word
+    by writing different letters. If the letter is in
+    the word, it will be pasted to the lines.
 
-        You have 9 lifes.
+    You have 9 lifes.
     """)
 
 
