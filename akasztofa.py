@@ -24,6 +24,7 @@ def print_about():
         You have 9 lifes.
     """)
 
+
 # beolvassa fájlt és visszaadja a kategóriákat (a sorok eleje) és a szavakat
 def read_letters():
     with open('word_list.csv', 'r') as f:
@@ -105,7 +106,7 @@ def menu_mode():
                 return numb       # bekéri a választott kategória számát
         except ValueError:
             continue
-    
+
 
 # sets the menu screen and asks the category
 def menu_cat(mode):
