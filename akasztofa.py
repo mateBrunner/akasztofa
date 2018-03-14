@@ -242,6 +242,8 @@ def main():
         name = []
         while True:
             mode = menu_mode(name)
+            if mode != 2:
+                name = [""]
             menu_cat(mode, name[0])
     except KeyboardInterrupt:
         print("\n   You exited the game!")
